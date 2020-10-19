@@ -1,11 +1,41 @@
 from rest_framework import serializers
-from .models import Article
+from .models import Supermarket, Date, Entry
 
-class ArticleSerializer(serializers.ModelSerializer): 
+class SupermarketSerializer(serializers.ModelSerializer): 
     class Meta:
-        model = Article
-        fields = ['id', 'title', 'author']
+        model = Supermarket
+        fields = ['id', 'name', 'active']
     
+
+class entriesSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = Entry
+            fields = ['title', 'subtitle']
+
+
+class dateSerializer(serializers.ModelSerializer): 
+        
+    entries = entriesSerializer(many=True)
+
+    class Meta:
+        model = Date        
+        fields = ['id', 'date', 'entries']
+        
+
+# KUNNEN WE EEN APARTE SERIALIZER MAKEN VOOR ALLEEN DE ENTRIES LOLZZZZZZZZZZZZZZZZZZZZZZZ
+
+
+
+
+
+# class dateSerializer(serializers.Serializer):
+
+#     date = serializers.DateTimeField()
+#     entries = serializers.ListField(child=entriesSerializer())
+
+#     def create(self, validated_data):
+#     #     return Article.objects.create(validated_data)
+
 
 
 #     title = serializers.CharField(max_length=100)
