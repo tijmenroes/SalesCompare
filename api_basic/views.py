@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from rest_framework.parsers import JSONParser
 from .models import Supermarket, Scraper,  Entry, Name, Info, ScraperEntry
-from .serializers import SupermarketSerializer, dateSerializer, testSerializer, nameSerializer, ScraperSerializer
+from .serializers import SupermarketSerializer, dateSerializer, testSerializer, nameSerializer, ScraperSerializer, SupermarketDataSerializer
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
 
@@ -37,8 +37,11 @@ def write_to_db(sm_id, data):
         { "title": "Croissantjes", "subtitle":  "nu 5 voor 1 euro", "old_price": "1.50", "new_price": "1", "img_path": 'NULL', },
         { "title": "Kaiserbroodjes", "subtitle":  "nu 6 voor 1 euro", "old_price": "1.70", "new_price": "1", "img_path": 'NULL', },
     ]
-    s = ScraperEntry(supermarket_id = 1, time_start = datetime.now(), time_end =datetime.now(), sales = scraped_mock_data)
+    # supermarket = Supermarket.objects.get(name="Jumbo")
+    # print(supermarket._id)
+    # s = ScraperEntry(supermarket = supermarket, time_start = datetime.now(), time_end =datetime.now(), sales = scraped_mock_data)
     # s.save()
+    # print(s.supermarket)
 
     
     #   Try # 2
@@ -67,9 +70,18 @@ def write_to_db(sm_id, data):
 @csrf_exempt
 def get_scraper_entry(request):
     if request.method == 'GET':
-        entries = ScraperEntry.objects.all()
-        serializer = ScraperSerializer(entries, many = True)
 
+
+        #  Er is misschien een betere manier door de entries op te halen en te groupen per supermarkt.
+        supermarkets = Supermarket.objects.all()
+        array  = []
+
+        for supermarket in supermarkets:
+            data = ScraperEntry.objects.filter(supermarket = supermarket._id)
+            entry = {"name": supermarket.name, "data": data}
+            array.append(entry)
+        
+        serializer = SupermarketDataSerializer(array, many = True)
         return JsonResponse(serializer.data,status=201, safe=False)
 
     if request.method == 'POST':

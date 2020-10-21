@@ -1,8 +1,15 @@
 from jsonfield import JSONField
-# from django.db import models
 from djongo import models
 from django import forms
-# from django.contrib.postgres.fields import ArrayField
+
+class Supermarket(models.Model):
+    # id = models.AutoField(blank=False, primary_key=True)
+    _id = models.ObjectIdField()
+    name = models.CharField(max_length=100, blank=False)
+    active = models.BooleanField(default=True)
+
+    # def __str__(self):
+        # return self.id
 
 
 class Sale(models.Model):
@@ -10,7 +17,7 @@ class Sale(models.Model):
     subtitle = models.EmailField()
     old_price = models.CharField()
     new_price = models.CharField()
-    img_path = models.CharField()
+    img_path = models.CharField(null=True)
     
     class Meta:
         abstract = True
@@ -23,7 +30,7 @@ class SaleForm(forms.ModelForm):
 
 class ScraperEntry(models.Model):
     _id = models.ObjectIdField()
-    supermarket_id = models.IntegerField()   
+    supermarket = models.ForeignKey('Supermarket', on_delete=models.CASCADE)   
     time_start = models.DateField()
     time_end = models.DateField() 
     sales = models.ArrayField(
@@ -34,13 +41,9 @@ class ScraperEntry(models.Model):
     objects = models.DjongoManager()
 
 
-class Supermarket(models.Model):
-    id = models.IntegerField(blank=False, primary_key=True)
-    name = models.CharField(max_length=100, blank=False)
-    active = models.BooleanField(default=True)
 
-    def __str__(self):
-        return self.name
+
+
 
 class Scraper(models.Model):
     _id = models.ObjectIdField()

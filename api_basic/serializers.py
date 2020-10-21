@@ -1,6 +1,10 @@
 from rest_framework import serializers
 from .models import Supermarket, Scraper, Entry, Author
 
+
+
+
+
 class SalesSerializer(serializers.Serializer):
     title = serializers.CharField()
     subtitle = serializers.CharField()
@@ -19,6 +23,12 @@ class SupermarketSerializer(serializers.ModelSerializer):
         model = Supermarket
         fields = ['id', 'name', 'active']
     
+
+class SupermarketDataSerializer(serializers.Serializer):
+    name =  serializers.CharField()
+    data =  serializers.ListField(child=ScraperSerializer())
+    
+
 
 # All my try's 
 
