@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from rest_framework.parsers import JSONParser
-from .models import Supermarket, Date
-from .serializers import SupermarketSerializer, dateSerializer
+from .models import Supermarket, Scraper,  Entry, Name, Info, ScraperEntry
+from .serializers import SupermarketSerializer, dateSerializer, testSerializer, nameSerializer, ScraperSerializer
 from django.views.decorators.csrf import csrf_exempt
+from django.core import serializers
 
 import os
 from django.conf import settings
@@ -29,46 +30,87 @@ def add_supermarket(request):
 
 
 
+def write_to_db(sm_id, data):
+    
+    #   Try # 3
+    scraped_mock_data = [
+        { "title": "Croissantjes", "subtitle":  "nu 5 voor 1 euro", "old_price": "1.50", "new_price": "1", "img_path": 'NULL', },
+        { "title": "Kaiserbroodjes", "subtitle":  "nu 6 voor 1 euro", "old_price": "1.70", "new_price": "1", "img_path": 'NULL', },
+    ]
+    s = ScraperEntry(supermarket_id = 1, time_start = datetime.now(), time_end =datetime.now(), sales = scraped_mock_data)
+    # s.save()
 
+    
+    #   Try # 2
+    
+    # print('lol')
+    # entry = Entry()
+    # entry.authors = [{'name': 'John', 'email': 'john@mail.com'},
+    #                 {'name': 'Paul', 'email': 'paul@mail.com'}]
+    # # entry.save()
+    # print(entry)
+
+    #    First Try
+
+    # # supermarket = Supermarket.objects.get(id=sm_id)
+    # print(supermarket.id)
+    # s = Scraper(supermarket_id = supermarket.id, date = datetime.now())
+    # s.save()
+    # print("scraper_id = ")
+    # print(s._id)
+    # sm_serializer = SupermarketSerializer(data=supermarket)
+    # if sm_serializer.is_valid():
+        # print(sm_serializer.data)
+
+
+  
+@csrf_exempt
+def get_scraper_entry(request):
+    if request.method == 'GET':
+        entries = ScraperEntry.objects.all()
+        serializer = ScraperSerializer(entries, many = True)
+
+        return JsonResponse(serializer.data,status=201, safe=False)
+
+    if request.method == 'POST':
+        return HttpResponse("lolz")
+
+
+
+
+    # Some serializing try's 
+@csrf_exempt
+def get_entry(request):
+    if request.method == 'GET':
+        entries = Entry.objects.all()
+        print(entries[0].headline)
+        serializer = testSerializer(data= entries, many = True)
+
+        if serializer.is_valid():
+            print(serializer.data)
+            print("IK HEB AIDS")
+            return JsonResponse(serializer.data,status=201, safe=False)
+        else:
+            return HttpResponse(serializer.errors)
+
+    if request.method == 'POST':
+        return HttpResponse("lolz")
 
 
 @csrf_exempt
-def write_to_file(request):
-    
+def get_name(request):
     if request.method == 'GET':
-        txtfile = open(os.path.join(settings.BASE_DIR, "textfile.txt"), "r")
-        read = txtfile.read()
-        return HttpResponse(read)
+        names = Name.objects.all()
+        serializer = nameSerializer(names, many = True)
+
+        return JsonResponse(serializer.data,status=201, safe=False)
+        # else:
+        #     return JsonResponse(serializer.errors)
+
+    if request.method == 'POST':
+        return HttpResponse("lolz")
         
-
-    elif request.method == 'POST':
-        date = datetime.now()
-        txtfile = open(os.path.join(settings.BASE_DIR, "textfile.txt"), "a")
-        txtfile.write("\n hello ")
-        txtfile.write(date.strftime("%d/%m/%Y %H:%M:%S") )
-            
-        txtfile = open(os.path.join(settings.BASE_DIR, "textfile.txt"), "r")
-        read = txtfile.read()
-        return HttpResponse(read)
-
-
-
-def write_to_db(data):
-    print(data['entries'])
-
-    # dump = json.dumps(b)
-    # print(type(json.loads(dump)))
-    # e = Date(data)
-    # e.save()
-    # print(e.objects)
-    serializer = dateSerializer(data=data)
-
-    if serializer.is_valid():
-        serializer.save()
-        print(serializer.data)
-    else:
-         print(serializer.errors)
-
+    
 @csrf_exempt
 def get_data(request):
     if request.method == 'GET':
@@ -76,61 +118,4 @@ def get_data(request):
         print(dates[0])
         serializer = dateSerializer(dates, many = True)
         # print(serializer.data[1]["entries"][0])
-        return JsonResponse(serializer.data,status=201, safe=False)
-
-
-
-
-
-
-
-
-# @csrf_exempt
-# def article_list(request):
-#     if request.method == 'GET':
-#         articles = Article.objects.all()
-#         serializer = ArticleSerializer(articles, many=True)
-#         return JsonResponse(serializer.data, safe=False)
-
-#     elif request.method == 'POST':
-#         data = JSONParser().parse(request)
-#         serializer = ArticleSerializer(data=data)
-
-#         if serializer.is_valid():
-#             serializer.save()
-#             return JsonResponse(serializer.data,status=201)
-#         return JsonResponse(serializer.errors, status=400)
-
-# @csrf_exempt
-# def article_detail(request,pk):
-#     try: 
-#         article = Article.objects.get(pk=pk)
-
-#     except Article.DoesNotExist:
-#         return HttpResponse(status=404)
-
-#     if request.method == 'GET':
-        
-#         serializer = ArticleSerializer(article)
-#         return JsonResponse(serializer.data)
-
-#     elif request.method == 'PUT':
-#         data = JSONParser().parse(request)
-#         serializer = ArticleSerializer(article,data=data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return JsonResponse(serializer.data,status=201)
-#         return JsonResponse(serializer.errors, status=400)
-
-#     elif request.method ==  'DELETE': 
-#         article.delete()
-#         return HttpResponse(status=204)
-
-
-
-
-
-
-
-
-
+        return JsonResponse(serializer.data, safe=False)

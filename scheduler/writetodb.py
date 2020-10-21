@@ -5,9 +5,7 @@ import json
 import sys
 sys.path.append('../')
 from api_basic.views import write_to_db
-# from api_basic.models import Date
-
-
+from api_basic.models import Supermarket
 
 def write():
     date = datetime.now()
@@ -15,13 +13,14 @@ def write():
     # client=pymongo.MongoClient('mongodb://127.0.0.1:27017')
     # mydb=client["prijsvergelijker"]
     # table= mydb.test
+    # supermarkets = Supermarket.objects.all()
 
     poepdata = [{"title": "Superlit", "subtitle": "subtitle"}, {"title":  "Superlit2", "subtitle": "subtitle2"}]
     dump = json.dumps(poepdata)
     loaded = json.loads(dump)
     scraped_data = {"date": datetime.now(), "entries": loaded}
-
-    write_to_db(scraped_data)
+    sm_name = 1
+    write_to_db(sm_name, scraped_data)
 
 
 

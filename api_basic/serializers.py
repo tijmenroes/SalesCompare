@@ -1,11 +1,26 @@
 from rest_framework import serializers
-from .models import Supermarket, Date, Entry
+from .models import Supermarket, Scraper, Entry, Author
+
+class SalesSerializer(serializers.Serializer):
+    title = serializers.CharField()
+    subtitle = serializers.CharField()
+    old_price = serializers.CharField()
+    new_price = serializers.CharField()
+    img_path = serializers.CharField()
+
+class ScraperSerializer(serializers.Serializer):
+    time_start = serializers.DateField()
+    time_end = serializers.DateField()
+    sales = serializers.ListField(child=SalesSerializer())
+
 
 class SupermarketSerializer(serializers.ModelSerializer): 
     class Meta:
         model = Supermarket
         fields = ['id', 'name', 'active']
     
+
+# All my try's 
 
 class entriesSerializer(serializers.ModelSerializer):
         class Meta:
@@ -18,42 +33,36 @@ class dateSerializer(serializers.ModelSerializer):
     entries = entriesSerializer(many=True)
 
     class Meta:
-        model = Date        
+        model = Scraper        
         fields = ['id', 'date', 'entries']
-        
-
-# KUNNEN WE EEN APARTE SERIALIZER MAKEN VOOR ALLEEN DE ENTRIES LOLZZZZZZZZZZZZZZZZZZZZZZZ
 
 
+class authorSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    # class Meta:
+        # model = Author
+        # fields = ['name', 'email']        
+
+class testSerializer(serializers.Serializer):
+    # authors = authorSerializer(many=True)
+    headline = serializers.CharField()
+    authors = serializers.ListField(child=authorSerializer())
+    # class Meta:
+        # model = Entry
+        # fields = ['headline']
 
 
+class infoSerializer(serializers.Serializer):
+    age = serializers.IntegerField()
+    sex = serializers.CharField()
+    # class Meta:
+        # fields = ['age', 'sex']
 
-# class dateSerializer(serializers.Serializer):
-
-#     date = serializers.DateTimeField()
-#     entries = serializers.ListField(child=entriesSerializer())
-
-#     def create(self, validated_data):
-#     #     return Article.objects.create(validated_data)
-
-
-
-#     title = serializers.CharField(max_length=100)
-#     author = serializers.CharField(max_length=100)
-#     email = serializers.EmailField(max_length=100)
-#     date = serializers.DateTimeField()    
+class nameSerializer(serializers.Serializer):
+    firstname = serializers.CharField()
+    # info = infoSerializer(many=True)
+    info = serializers.ListField(child=infoSerializer())
+    # class Meta:
+        # fields = ['firstname', 'info']
 
 
-    # def create(self, validated_data):
-    #     return Article.objects.create(validated_data)
-
-    # def update(self, instance, validated_data):
-    #     instance.title = validated_data.get('title', instance.title)
-    #     instance.author = validated_data.get('author', instance.author)
-    #     instance.email = validated_data.get('email', instance.email)
-    #     instance.date = validated_data.get('date', instance.date)
-    #     instance.save()
-    #     return instance
-
-
-# ModelSerializer kan een volgende stap zijn

@@ -6,5 +6,4 @@ class ApiBasicConfig(AppConfig):
 
     def ready(self):
         from scheduler import scheduler
-        # writetofile.write()
         scheduler.start()
