@@ -71,7 +71,6 @@ def write_to_db(sm_id, data):
 def get_scraper_entry(request):
     if request.method == 'GET':
 
-
         #  Er is misschien een betere manier door de entries op te halen en te groupen per supermarkt.
         supermarkets = Supermarket.objects.all()
         array  = []

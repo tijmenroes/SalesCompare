@@ -8,8 +8,6 @@ class Supermarket(models.Model):
     name = models.CharField(max_length=100, blank=False)
     active = models.BooleanField(default=True)
 
-    # def __str__(self):
-        # return self.id
 
 
 class Sale(models.Model):
