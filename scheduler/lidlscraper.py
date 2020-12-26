@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from datetime import datetime
 
@@ -27,7 +28,6 @@ def finalise_data(data):
     #         result[entry["date"]] = [product_data]
     #     else:
     #         result[entry["date"]].append(product_data)
-    print(data)
     res = []
     for key in data:
         start, end = get_dates(key)
@@ -35,46 +35,41 @@ def finalise_data(data):
 
     print(res)
 
-# def scrape():
 PATH = "C:\Program Files (x86)\chromedriver.exe"
 driver = webdriver.Chrome(PATH)
 driver.get("https://www.lidl.nl/acties")
 # Wait for cookie button to appear
 driver.implicitly_wait(5)
 try:
-    cookiebtn = driver.find_element_by_class_name("cookie-alert-extended-button")
+    cookiebtn = driver.find_element_by_class_name(
+        "cookie-alert-extended-button")
     cookiebtn.click()
 finally:
-    print('buton clicked')
+    print('button clicked')
 
-driver.implicitly_wait(2)
-driver.execute_script("window.scrollBy(0,1000)")
-products = driver.find_elements_by_class_name("product--tile")
 
-scraped_data = {}
 try:
+    driver.execute_script("window.scrollBy(0,1000)")
+    driver.implicitly_wait(5)
+    
+    products = driver.find_elements_by_class_name("product--tile") 
+    
+finally:
+    # products = driver.find_elements_by_class_name("product--tile")
+    print(products)
+    scraped_data = {}
+
     for product in products:
-        # el = product.get_attribute('innerHTML')
-        # title = el.find_element_by_class_name("product__title").text
-        # print(product.text)
-        date = product.find_element_by_class_name("ribbon__item--primary")
-        # print(title)
-        # print(product.find_element_by_class_name("product__title").text)
-        # print(product.find_element_by_class_name("pricebox__highlight").text)
-        # print(product.find_element_by_class_name("pricebox__price").text)
+        date = product.find_element_by_class_name("ribbon__item--primary").text
         product_data = {
-        "title":  product.find_element_by_class_name("product__title").text,
-        # "subtitle": subtitle,
-        "action_desc": product.find_element_by_class_name("pricebox__highlight").text,
-        "action_price": product.find_element_by_class_name("pricebox__price").text
+            "title":  product.find_element_by_class_name("product__title").text,
+            "action_desc": product.find_element_by_class_name("pricebox__highlight").text,
+            "action_price": product.find_element_by_class_name("pricebox__price").text
         }
         if date not in scraped_data:
             scraped_data[date] = [product_data]
         else:
             scraped_data[date].append(product_data)
-finally:
-    driver.quit()
-    # finalise_data(scraped_data)
-print(scraped_data)
 
-# scrape()
+        finalise_data(scraped_data)
+        driver.quit()
