@@ -1,9 +1,11 @@
 api_basic/__pycache__
+api_basic/__pycache__/*
 api_basic/migrations/__pycache__
-api_basic/migrations/
+api_basic/migrations/*
 SalesCompare/__pycache__
 scheduler/__pycache__
+__pycache__
 db.sqlite3
-virtualenv.txt
+debug.log
 
 
