@@ -12,10 +12,10 @@ class Supermarket(models.Model):
 
 class Sale(models.Model):
     title = models.CharField(max_length=200)
-    subtitle = models.EmailField()
-    old_price = models.CharField()
-    new_price = models.CharField()
-    img_path = models.CharField(null=True)
+    subtitle = models.CharField(blank=True, null=True)
+    old_price = models.CharField(blank=True, null=True)
+    new_price = models.CharField(blank=True, null=True)
+    img_path = models.CharField(blank=True, null=True)
     
     class Meta:
         abstract = True
@@ -29,8 +29,8 @@ class SaleForm(forms.ModelForm):
 class ScraperEntry(models.Model):
     _id = models.ObjectIdField()
     supermarket = models.ForeignKey('Supermarket', on_delete=models.CASCADE)   
-    time_start = models.DateField()
-    time_end = models.DateField() 
+    time_start = models.DateField(blank=True, null=True)
+    time_end = models.DateField(blank=True, null=True) 
     sales = models.ArrayField(
         model_container=Sale,
         model_form_class=SaleForm

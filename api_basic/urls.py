@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import   get_supermarkets, add_supermarket, get_data, get_entry, get_name, get_scraper_entry
+from .views import   get_supermarkets, add_supermarket, get_data, get_entry, get_name, get_scraper_entry, run_scraper_manually
 urlpatterns = [
     path('api/supermarkets', get_supermarkets),
     path('api/add-supermarket', add_supermarket),
@@ -7,4 +7,5 @@ urlpatterns = [
     path('api/getentry', get_entry),
     path('api/getname', get_name),
     path('api/getscraperentries', get_scraper_entry),
+    path('api/runscraper', run_scraper_manually),
 ]
