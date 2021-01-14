@@ -16,7 +16,7 @@ class ScraperSerializer(serializers.Serializer):
 class SupermarketSerializer(serializers.ModelSerializer): 
     class Meta:
         model = Supermarket
-        fields = ['id', 'name', 'active']
+        fields = ['name']
     
 class SupermarketDataSerializer(serializers.Serializer):
     name =  serializers.CharField()

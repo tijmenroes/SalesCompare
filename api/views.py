@@ -18,7 +18,7 @@ def get_supermarkets(request):
     if request.method == 'GET':
         supermarkets = Supermarket.objects.all()
         serializer = SupermarketSerializer(supermarkets, many=True)
-        return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.data, status=201, safe=False)
 
 @csrf_exempt
 def add_supermarket(request):
@@ -31,11 +31,9 @@ def add_supermarket(request):
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
 
-
 @csrf_exempt
 def get_scraper_entry(request):
     if request.method == 'GET':
-
         #  Er is misschien een betere manier door de entries op te halen en te groupen per supermarkt.
         supermarkets = Supermarket.objects.all()
         array = []
@@ -49,7 +47,7 @@ def get_scraper_entry(request):
         return JsonResponse(serializer.data, status=201, safe=False)
 
     if request.method == 'POST':
-        return HttpResponse("lolz")
+        return HttpResponse("this route only accepts GET requests")
 
 
 @csrf_exempt
@@ -58,7 +56,6 @@ def run_scraper_manually(request):
     if request.method == 'POST':
         json_data = json.loads(request.body)
         sm_name = json_data['supermarket'].capitalize()
-        print(sm_name)
         sm_id = Supermarket.objects.get(name=sm_name)
         # try:
         data = testscrapers.main(sm_name)
@@ -69,4 +66,24 @@ def run_scraper_manually(request):
         return JsonResponse(data, safe=False)
         # except:
             # return HttpResponse("This scraper is not working")
+
+
+
+@csrf_exempt
+def get_sales(request):
+    if request.method == 'GET':
+        #  Er is misschien een betere manier door de entries op te halen en te groupen per supermarkt.
+        supermarkets = Supermarket.objects.all()
+        array = []
+
+        for supermarket in supermarkets:
+            data = ScraperEntry.objects.filter(supermarket=supermarket._id)
+            entry = {"name": supermarket.name, "data": data}
+            array.append(entry)
+
+        serializer = SupermarketDataSerializer(array, many=True)
+        return JsonResponse(serializer.data, status=201, safe=False)
+
+    if request.method == 'POST':
+        return HttpResponse("this route only accepts GET requests")
 

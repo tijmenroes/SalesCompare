@@ -3,7 +3,6 @@ from djongo import models
 from django import forms
 
 class Supermarket(models.Model):
-    # id = models.AutoField(blank=False, primary_key=True)
     _id = models.ObjectIdField()
     name = models.CharField(max_length=100, blank=False)
     active = models.BooleanField(default=True)

@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+from decouple import config
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '+@*o5gv6c*lg7lw0$5gi0a%k+ks@#pwho*ad(j!d!twrawyk%#'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -87,20 +87,14 @@ WSGI_APPLICATION = 'SalesCompare.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'prijsvergelijker',
-        'HOST': '127.0.0.1',
-        'PORT': 27017,
+        "CLIENT": {
+           "name": 'prijsvergelijker',
+           "host": config('MONGODB_CONN_STRING'),
+           "username": config('DB_USER'),
+           "password": config('DB_PASSWORD'),
+        },
     }
 }
-
-
-# SQL db
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 
 
 # Password validation
