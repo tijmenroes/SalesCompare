@@ -1,1 +1,1 @@
-web: waitress-serve --port=5000 SalesCompare.wsgi:application
+web: waitress-serve --listen "*:$PORT" SalesCompare.wsgi:application
