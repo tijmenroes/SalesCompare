@@ -5,12 +5,9 @@ def main(supermarket):
     print(supermarket)
     if supermarket == "Lidl":
         res = lidlsoupscraper.main()
-        # print(res)
     elif supermarket == "Jumbo":
         res = "test"
         print("NO")
     elif supermarket == "Aldi":
         res = aldisoupscraper.main()
     return res
-
-# main("lidl")
