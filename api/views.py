@@ -73,17 +73,23 @@ def run_scraper_manually(request):
 def get_sales(request):
     if request.method == 'GET':
         #  Er is misschien een betere manier door de entries op te halen en te groupen per supermarkt.
-        supermarkets = Supermarket.objects.all()
-        array = []
+            
+        sale_array = []
+        # check if filters are given, if not, give all supermarketes
+        try:
+            body = json.loads(request.body) 
+            body["filters"]
+            supermarkets = [Supermarket.objects.get(name=f) for f in body["filters"]]
+        except:
+            supermarkets = Supermarket.objects.all()
 
         for supermarket in supermarkets:
             data = ScraperEntry.objects.filter(supermarket=supermarket._id)
             entry = {"name": supermarket.name, "data": data}
-            array.append(entry)
+            sale_array.append(entry)
 
-        serializer = SupermarketDataSerializer(array, many=True)
+        serializer = SupermarketDataSerializer(sale_array, many=True)
         return JsonResponse(serializer.data, status=201, safe=False)
 
     if request.method == 'POST':
         return HttpResponse("this route only accepts GET requests")
-
