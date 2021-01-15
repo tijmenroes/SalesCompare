@@ -1,11 +1,8 @@
-api/__pycache__
 api/__pycache__/*
-api/migrations/__pycache__
 api/migrations/*
-SalesCompare/__pycache__
-scheduler/__pycache__
-__pycache__
 db.sqlite3
 debug.log
 .env
 venv/
+*.log
+*__pycache__

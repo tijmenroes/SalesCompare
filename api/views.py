@@ -49,9 +49,8 @@ def get_scraper_entry(request):
     if request.method == 'POST':
         return HttpResponse("this route only accepts GET requests")
 
-
 @csrf_exempt
-def run_scraper_manually(request):
+def run_scraper_manually(request, to_save):
 
     if request.method == 'POST':
         json_data = json.loads(request.body)
@@ -61,13 +60,14 @@ def run_scraper_manually(request):
         data = testscrapers.main(sm_name)
         for key in data:
             s = ScraperEntry(supermarket=sm_id, time_start=key["time_start"], time_end=key["time_end"], sales=key["sales"])
-            s.save()
+            if to_save = True:
+                s.save()
+            
+
 
         return JsonResponse(data, safe=False)
         # except:
             # return HttpResponse("This scraper is not working")
-
-
 
 @csrf_exempt
 def get_sales(request):

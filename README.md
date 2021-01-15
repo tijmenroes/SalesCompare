@@ -1,17 +1,22 @@
 
 # Supermarket sales scraper
 
-
+# Requirements
+Before running this project you will need
+- MongoDB Database
+- Chromedriver installed
 
 # Installation & Set up
+I suggest first setting up a virtualenv `python3 -m venv venv` and activating it `venv/Scripts/actiavte.bat`.
 ```
 pip install -r requirements.txt
 ```
-
+Install all requirements with pip
 ```
 cp .env.example .env
 ```
 copy .env.examply to .env and set all the variables needed
+
 
 # Migrations
 ```
@@ -58,3 +63,13 @@ Set all the .env variables for heroku
 ```
 git push heroku HEAD:master
 ```
+
+
+# Project structure
+### scrapers
+
+
+### api
+
+
+### General

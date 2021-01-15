@@ -37,3 +37,16 @@ class Scraper(models.Model):
     _id = models.ObjectIdField()
     date = models.DateTimeField(max_length=100, blank=False)
     supermarket_id = models.IntegerField(blank=False)
+
+class ScraperLogs(models.Model):
+    _id = models.ObjectIdField()
+    scraper_id = models.ForeignKey('ScraperEntry', on_delete=models.CASCADE)  
+    supermarket = models.ForeignKey('Supermarket', on_delete=models.CASCADE)
+    date_time = models.DateTimeField(max_length=100, blank=False)
+    amount_sales = models.IntegerField()
+    succeeded = models.BooleanField(default=False)
+
+    # scraper_id = models.ObjectIdField()
+    # supermarket_id = models.ObjectIdField()
+    
+
