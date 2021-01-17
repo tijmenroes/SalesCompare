@@ -9,7 +9,9 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
+import os 
 
+from decouple import config
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,12 +22,12 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '+@*o5gv6c*lg7lw0$5gi0a%k+ks@#pwho*ad(j!d!twrawyk%#'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG_MODE')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [config('ALLOWED_HOST1'),  config('ALLOWED_HOST2')]
 
 
 # Application definition
@@ -38,10 +40,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'api_basic.apps.ApiBasicConfig',
-    'corsheaders'
+    'api.apps.ApiBasicConfig',
+    'corsheaders',
+    'rest_framework_swagger'
 
 ]
+REST_FRAMEWORK = { 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema' }
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -87,20 +91,14 @@ WSGI_APPLICATION = 'SalesCompare.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'prijsvergelijker',
-        'HOST': '127.0.0.1',
-        'PORT': 27017,
+        "CLIENT": {
+           "name": 'prijsvergelijker',
+           "host": config('MONGODB_CONN_STRING'),
+           "username": config('DB_USER'),
+           "password": config('DB_PASSWORD'),
+        },
     }
 }
-
-
-# SQL db
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 
 
 # Password validation
@@ -140,3 +138,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+VENV_PATH = os.path.dirname(BASE_DIR)
+STATIC_ROOT = os.path.join(VENV_PATH, 'static_root')

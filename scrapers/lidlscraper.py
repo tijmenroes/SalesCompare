@@ -4,14 +4,6 @@ from datetime import datetime
 
 from bs4 import BeautifulSoup
 
-url = 'https://www.lidl.nl/acties'
-
-headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36"}
-
-page = requests.get(url, headers=headers)
-
-soup = BeautifulSoup(page.content, 'html.parser')
-
 thisyear = "/" + str(datetime.now().year)
 
 def format_date(date):
@@ -38,6 +30,11 @@ def finalise_data(data):
     return res
 
 def main():
+    url = 'https://www.lidl.nl/acties'
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36"}
+    page = requests.get(url, headers=headers)
+    soup = BeautifulSoup(page.content, 'html.parser')
+
     products = soup.find_all('article', class_='product--tile')
     scraped_data = {}
     for product in products:
