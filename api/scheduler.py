@@ -5,31 +5,19 @@ from .models import Supermarket
 
 scheduler = BackgroundScheduler()
 supermarkets = Supermarket.objects.all()
-def start():
-    print('started')
-    testscrapers()
-    runscrapers() 
-    # scheduler.add_job(writetofile.write, 'interval', minutes=1)
-    # scheduler.start()
- 
-
-def testscrapers():
-    print('yeee')
-    for s in supermarkets:
-        print(s.name)
-        print(save_scraper_data(s, False))
-        print("done!!!")
 
 def runscrapers():
-    print('yeee222222')
+    for s in supermarkets:
+        save_scraper_data(s, True)
 
-# def save_data(sm_name):
-#     data = testscrapers.main(sm_name)
-#     sm_id = Supermarket.objects.get(name=sm_name) 
-    
-#     for key in data:
-#         s = ScraperEntry(supermarket=sm_id, time_start=key["time_start"], time_end=key["time_end"], sales=key["sales"])
-#         s.save()
+def testscrapers():
+    for s in supermarkets:
+        save_scraper_data(s, False)
+
+def start():
+    scheduler.add_job(runscrapers, 'cron', day_of_week='mon', hour=6, jitter=3600)
+    scheduler.add_job(testscrapers, 'cron', day_of_week='wed,fri,sun', hour=4, jitter=3600)
+    scheduler.start()
+ 
 
 
-# save_scraper_data()

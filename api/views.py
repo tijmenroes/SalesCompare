@@ -11,7 +11,7 @@ from django.core import serializers
 from django.conf import settings
 from .models import Supermarket, Scraper,  ScraperEntry, ScraperLogs
 from .serializers import SupermarketSerializer, ScraperSerializer, SupermarketDataSerializer
-from scrapers import testscrapers
+from scrapers import runscrapers
 
 
 def get_supermarkets(request):
@@ -52,7 +52,7 @@ def get_scraper_entry(request):
 
 def save_scraper_data(supermarket, to_save=False):
     try:
-        data = testscrapers.main(supermarket.name)
+        data = runscrapers.main(supermarket.name)
         for key in data:
             s = ScraperEntry(supermarket=supermarket, time_start=key["time_start"], time_end=key["time_end"], sales=key["sales"])
             scraper_id = None
@@ -61,7 +61,6 @@ def save_scraper_data(supermarket, to_save=False):
                 scraper_id = s
             log = ScraperLogs(scraper_id=scraper_id, supermarket=supermarket, amount_sales=len(key["sales"]), succeeded=True )
             log.save()
-            print("saved")
         return JsonResponse(data, safe=False)
     except Exception as e:
         print(e)
@@ -69,7 +68,7 @@ def save_scraper_data(supermarket, to_save=False):
         return HttpResponse("Scraper for this supermarket is not working")
 
 @csrf_exempt
-def run_scraper_manually(request, to_save=False):
+def run_scraper_manually(request):
 
     if request.method == 'POST':
         json_data = json.loads(request.body)
@@ -78,7 +77,7 @@ def run_scraper_manually(request, to_save=False):
         try:
             to_save = json_data['save']
         except:
-            pass
+            to_save= False
         return save_scraper_data(sm, to_save)
         
             
