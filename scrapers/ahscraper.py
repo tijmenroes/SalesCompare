@@ -52,4 +52,4 @@ def main():
     print(sales)
     # return scraped_data
 
-main()
+# main()

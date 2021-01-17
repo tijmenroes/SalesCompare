@@ -13,6 +13,13 @@ class ScraperSerializer(serializers.Serializer):
     time_end = serializers.DateField()
     sales = serializers.ListField(child=SalesSerializer())
 
+class ScraperLogsSerializer(serializers.Serializer):
+    scraper_id = serializers.CharField()
+    supermarket = serializers.CharField()
+    date_time = serializers.DateTimeField()
+    amount_sales = serializers.IntegerField()
+    succeeded = serializers.BooleanField()
+
 class SupermarketSerializer(serializers.ModelSerializer): 
     class Meta:
         model = Supermarket

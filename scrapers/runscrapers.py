@@ -1,4 +1,4 @@
-from scheduler import lidlscraper, aldiscraper  
+from scrapers import lidlscraper, aldiscraper, ahscraper
 
 def main(supermarket):
     res = None
@@ -8,4 +8,6 @@ def main(supermarket):
         res = "test"
     elif supermarket == "Aldi":
         res = aldiscraper.main()
+    elif supermarket == "Albert heijn":
+        res = ahscraper.main()
     return res

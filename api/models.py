@@ -24,7 +24,7 @@ class SaleForm(forms.ModelForm):
         
 class ScraperEntry(models.Model):
     _id = models.ObjectIdField()
-    supermarket = models.ForeignKey('Supermarket', on_delete=models.CASCADE)   
+    supermarket = models.ForeignKey('Supermarket', on_delete=models.PROTECT)   
     time_start = models.DateField(blank=True, null=True)
     time_end = models.DateField(blank=True, null=True) 
     sales = models.ArrayField(
@@ -40,13 +40,11 @@ class Scraper(models.Model):
 
 class ScraperLogs(models.Model):
     _id = models.ObjectIdField()
-    scraper_id = models.ForeignKey('ScraperEntry', on_delete=models.CASCADE)  
-    supermarket = models.ForeignKey('Supermarket', on_delete=models.CASCADE)
-    date_time = models.DateTimeField(max_length=100, blank=False)
-    amount_sales = models.IntegerField()
+    scraper_id = models.ForeignKey('ScraperEntry', on_delete=models.PROTECT, blank= True, null=True)  
+    supermarket = models.ForeignKey('Supermarket', on_delete=models.PROTECT)
+    date_time = models.DateTimeField(auto_now_add=True, blank=False)
+    amount_sales = models.IntegerField(default=0)
     succeeded = models.BooleanField(default=False)
 
-    # scraper_id = models.ObjectIdField()
-    # supermarket_id = models.ObjectIdField()
     
 

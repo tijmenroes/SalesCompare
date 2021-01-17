@@ -9,9 +9,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
 
 from django.conf import settings
-from .models import Supermarket, Scraper,  ScraperEntry
+from .models import Supermarket, Scraper,  ScraperEntry, ScraperLogs
 from .serializers import SupermarketSerializer, ScraperSerializer, SupermarketDataSerializer
-from scheduler import testscrapers
+from scrapers import testscrapers
 
 
 def get_supermarkets(request):
@@ -49,25 +49,39 @@ def get_scraper_entry(request):
     if request.method == 'POST':
         return HttpResponse("this route only accepts GET requests")
 
+
+def save_scraper_data(supermarket, to_save=False):
+    try:
+        data = testscrapers.main(supermarket.name)
+        for key in data:
+            s = ScraperEntry(supermarket=supermarket, time_start=key["time_start"], time_end=key["time_end"], sales=key["sales"])
+            scraper_id = None
+            if to_save is True:
+                s.save()
+                scraper_id = s
+            log = ScraperLogs(scraper_id=scraper_id, supermarket=supermarket, amount_sales=len(key["sales"]), succeeded=True )
+            log.save()
+            print("saved")
+        return JsonResponse(data, safe=False)
+    except Exception as e:
+        print(e)
+        log = ScraperLogs(supermarket=supermarket, succeeded=False)
+        return HttpResponse("Scraper for this supermarket is not working")
+
 @csrf_exempt
-def run_scraper_manually(request, to_save):
+def run_scraper_manually(request, to_save=False):
 
     if request.method == 'POST':
         json_data = json.loads(request.body)
         sm_name = json_data['supermarket'].capitalize()
-        sm_id = Supermarket.objects.get(name=sm_name)
-        # try:
-        data = testscrapers.main(sm_name)
-        for key in data:
-            s = ScraperEntry(supermarket=sm_id, time_start=key["time_start"], time_end=key["time_end"], sales=key["sales"])
-            if to_save = True:
-                s.save()
+        sm = Supermarket.objects.get(name=sm_name)
+        try:
+            to_save = json_data['save']
+        except:
+            pass
+        return save_scraper_data(sm, to_save)
+        
             
-
-
-        return JsonResponse(data, safe=False)
-        # except:
-            # return HttpResponse("This scraper is not working")
 
 @csrf_exempt
 def get_sales(request):
@@ -75,10 +89,9 @@ def get_sales(request):
         #  Er is misschien een betere manier door de entries op te halen en te groupen per supermarkt.
             
         sale_array = []
-        # check if filters are given, if not, give all supermarketes
+        # check if filters are given, if not, give all supermarkets
         try:
             body = json.loads(request.body) 
-            body["filters"]
             supermarkets = [Supermarket.objects.get(name=f) for f in body["filters"]]
         except:
             supermarkets = Supermarket.objects.all()
