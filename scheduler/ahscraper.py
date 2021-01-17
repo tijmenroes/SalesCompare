@@ -21,7 +21,6 @@ def main():
     products = soup.find_all('div', class_='grid-item_col__1cD_2')
     sales = []
     for product in products:
-        # (start_time, end_time) = calculate_enddate(product_group.get('id'))
 
         title =  None
         old_price = None

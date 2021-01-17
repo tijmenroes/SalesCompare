@@ -1,13 +1,11 @@
-from scheduler import lidlsoupscraper, aldisoupscraper  
+from scheduler import lidlscraper, aldiscraper  
 
 def main(supermarket):
     res = None
-    print(supermarket)
     if supermarket == "Lidl":
-        res = lidlsoupscraper.main()
+        res = lidlscraper.main()
     elif supermarket == "Jumbo":
         res = "test"
-        print("NO")
     elif supermarket == "Aldi":
-        res = aldisoupscraper.main()
+        res = aldiscraper.main()
     return res
