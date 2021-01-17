@@ -67,9 +67,10 @@ git push heroku HEAD:master
 
 # Project structure
 ### scrapers
-
+In this directory the scrapers can be found, you can run them individually by calling main() in the respective file and running `python <filname>.py`
 
 ### api
+In the api folder all the configuration can be found for the rest API. This is using the Django rest framework.
 
-
-### General
+### SalesCompare
+In the SalesCompare the general settings can be found. The most important file of this folder is the `settings.py`. 

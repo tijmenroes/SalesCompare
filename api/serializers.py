@@ -14,7 +14,6 @@ class ScraperSerializer(serializers.Serializer):
     sales = serializers.ListField(child=SalesSerializer())
 
 class ScraperLogsSerializer(serializers.Serializer):
-    scraper_id = serializers.CharField()
     supermarket = serializers.CharField()
     date_time = serializers.DateTimeField()
     amount_sales = serializers.IntegerField()

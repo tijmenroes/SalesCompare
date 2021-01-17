@@ -2,15 +2,6 @@ import requests
 from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 
-def calculate_enddate(start):
-    # Calculate difference between date now, and end of the week 
-    day_number = datetime.strptime(start, '%Y-%m-%d').strftime('%w')
-    days_from = 7 - int(day_number)
-
-    start_time =  datetime.strptime(start, '%Y-%m-%d')
-    end_time = start_time + timedelta(days=days_from)
-    return (start_time, end_time)        
-
 def main():
     url = 'https://www.ah.nl/bonus'
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36"}
@@ -47,9 +38,4 @@ def main():
         }
         sales.append(product_data)
 
-        # obj = {"time_start": start_time, "time_end": end_time, "sales": sales}
-        # scraped_data.append(obj)
-    print(sales)
-    # return scraped_data
-
-# main()
+    return sales
