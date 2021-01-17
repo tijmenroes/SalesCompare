@@ -10,7 +10,7 @@ from django.core import serializers
 
 from django.conf import settings
 from .models import Supermarket, Scraper,  ScraperEntry, ScraperLogs
-from .serializers import SupermarketSerializer, ScraperSerializer, SupermarketDataSerializer
+from .serializers import SupermarketSerializer, ScraperSerializer, SupermarketDataSerializer, ScraperLogsSerializer
 from scrapers import runscrapers
 
 
@@ -65,7 +65,7 @@ def save_scraper_data(supermarket, to_save=False):
     except Exception as e:
         print(e)
         log = ScraperLogs(supermarket=supermarket, succeeded=False)
-        return HttpResponse("Scraper for this supermarket is not working")
+        return HttpResponse(e)
 
 @csrf_exempt
 def run_scraper_manually(request):
@@ -77,16 +77,12 @@ def run_scraper_manually(request):
         try:
             to_save = json_data['save']
         except:
-            to_save= False
+            to_save = False
         return save_scraper_data(sm, to_save)
         
-            
-
 @csrf_exempt
 def get_sales(request):
     if request.method == 'GET':
-        #  Er is misschien een betere manier door de entries op te halen en te groupen per supermarkt.
-            
         sale_array = []
         # check if filters are given, if not, give all supermarkets
         try:
@@ -105,3 +101,17 @@ def get_sales(request):
 
     if request.method == 'POST':
         return HttpResponse("this route only accepts GET requests")
+
+@csrf_exempt
+def get_logs(request):
+    try:
+        body = json.loads(request.body)
+        if body["filter"].capitalize() == "Failed":
+            logs = ScraperLogs.objects.filter(succeeded=False)
+        else:
+            logs = ScraperLogs.objects.all()
+        serializer = ScraperLogsSerializer(logs,many=True)
+        return JsonResponse(serializer.data, status=201, safe=False)
+        
+    except Exception as e:
+         return HttpResponse(e)
